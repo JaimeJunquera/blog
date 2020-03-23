@@ -12,22 +12,44 @@ class UserController extends Controller
     {
         $users = User::all();
 
-        $tittle = 'Listado de usuarios';
+        $title = 'Listado de usuarios';
 
         //return view('users.index')
 //            ->with('users', User::all())
 //            ->with('title', 'Listado de usuarios');
 
-        return view('users.index', compact('tittle','users'));
+        return view('users.index', compact('title','users'));
     }
 
     public function show($id)
     {
-        return view('users.show', compact('id'));
+        $user = User::findOrFail($id);
+
+        return view('users.show', compact('user'));
     }
 
     public function create()
     {
-        return 'Crear nuevo usuario';
+        return view('users.create');
     }
+
+    public function store()
+    {
+        $data = request()->validate([
+            'name' => 'required',
+            'email' => ['required', 'email', 'unique:users,email'],
+            'password' => 'required',
+        ], [
+            'name.required' => 'El campo nombre es obligatorio'
+        ]);
+
+        User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password'])
+        ]);
+
+        return redirect()->route('users.index');
+    }
+
 }
