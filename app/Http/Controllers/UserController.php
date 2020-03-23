@@ -22,10 +22,8 @@ class UserController extends Controller
         return view('users.index', compact('title','users'));
     }
 
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::findOrFail($id);
-
         return view('users.show', compact('user'));
     }
 
@@ -74,7 +72,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('users.show', [$user->id]);
+        return redirect()->route('users.show', ['user' => $user]);
     }
 
     function destroy(User $user)
