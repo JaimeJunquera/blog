@@ -16,13 +16,21 @@ class UserSeeder extends Seeder
     {
         //$professions = DB::select('SELECT id FROM professions WHERE title = ? LIMIT 0,1', ['Back-end developer']);
 
-        $professionID = Profession::where('title','Back-end developer')->value('id');
+        $professionId = Profession::where('title','Back-end developer')->value('id');
 
         User::create([
             'name' => 'Jaime Junquera',
             'email' => 'admin@admin.com',
             'password' => bcrypt('admin'),
-            'profession_id' => $professionID
+            'profession_id' => $professionId,
+            'is_admin' => true,
         ]);
+
+        factory(User::class)->create([
+            'profession_id' => $professionId
+        ]);
+
+        factory(User::class, 48)->create();
+
     }
 }
